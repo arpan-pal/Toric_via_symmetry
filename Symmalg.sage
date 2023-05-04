@@ -43,9 +43,13 @@ def lie_derivative_poly(poly,g, n = 0):
         der+= lie_derivative_mono(mon,g, n_vars)*coef
     return der
 
-def poly_to_vec(polynomial, n_vars, degree = 0):
+def poly_to_vec(polynomial, n = 0, degree = 0):
     '''***Description***'''
     R = polynomial.parent()
+    if n == 0:
+        n_vars = len(R.gens())
+    else:
+        n_vars = n
     if degree == 0:
         d = polynomial.degree()
     else:
@@ -96,5 +100,31 @@ def symmalg_homo(generators, n = 0):
     K_ker = K.right_kernel_matrix()
     L = [matrix(QQ,n_vars,n_vars,r) for r in K_ker.rows()]
     LieI = gap.LieAlgebra(gap.Rationals,L)
+    print('\nA basis of the Lie algebra consists of the following matrices:\n')
+    show(L)
     return LieI
+
+
+def symmalg(generators, n = 0):
+    S = generators[0].parent()
+    if n!=0:
+        n_vars = n
+    else:
+        n_vars = len(S.gens())
+    var =[str(t) for t in S.gens()[:n_vars]]
+    R = PolynomialRing(QQ, var)
+    R.inject_variables()
+    gens = [R(g) for g in generators]
+    d = max([g.degree() for g in gens])
+    L = []
+    for g in gens:
+        monomials = monomial_generator(R.gens()[:n_vars], d-g.degree())
+        for m in monomials:
+            L.append(g*m)
+    M = matrix(R, [poly_to_vec(l, n_vars, d) for l in L])
+    rows = M.pivot_rows()
+    LieI = symmalg_homo([L[i] for i in rows],n_vars)
+    return LieI
+
+    
 
