@@ -35,7 +35,7 @@ def lie_derivative_mono(monomial, g, n = 0):
 def lie_derivative_poly(poly,g, n = 0):
     '''***Description***'''
     if n == 0:
-        n_vars = len(monomial.parent().gens())
+        n_vars = len(poly.parent().gens())
     else:
         n_vars = n
     der = 0
@@ -43,10 +43,13 @@ def lie_derivative_poly(poly,g, n = 0):
         der+= lie_derivative_mono(mon,g, n_vars)*coef
     return der
 
-def poly_to_vec(polynomial, n_vars):
+def poly_to_vec(polynomial, n_vars, degree = 0):
     '''***Description***'''
     R = polynomial.parent()
-    d = polynomial.degree()
+    if degree == 0:
+        d = polynomial.degree()
+    else:
+        d = degree
     n_2 = binomial(n_vars+d-1,d)
     monomials = monomial_generator(R.gens()[:n_vars], d)
     vec = [0 for j in range(n_2)]
@@ -72,9 +75,10 @@ def symmalg_homo(generators, n = 0):
     R = PolynomialRing(QQ, var)
     R.inject_variables()
     gens = [R(g) for g in generators]
+    d = gens[0].degree()
     g = matrix(R,n_vars,n_vars,R.gens()[n_vars:])
     gens_vecs = [poly_to_vec(gen, n_vars) for gen in gens]
-    der_gens_vecs = [poly_to_vec(lie_derivative_poly(gen, g, n_vars), n_vars) for gen in gens]
+    der_gens_vecs = [poly_to_vec(lie_derivative_poly(gen, g, n_vars), n_vars, d) for gen in gens]
     matrices = [matrix(gens_vecs+[i]) for i in der_gens_vecs]
     eqns = set()
     for M in matrices:
