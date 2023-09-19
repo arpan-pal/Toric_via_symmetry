@@ -1,9 +1,8 @@
 def monomial_generator(variables, degree):
     '''
-    This function takes set of variables and a degree as input, 
-    and returns a list consisting of monomilas of desired degree in the given set of variables.
-    variables = list or tuple consisting of variables
-    degree = desired degree of the monomials
+    This function takes a set of variables and a degree as input and 
+returns a list of monomials of desired degree in the given set 
+of variables.
     '''
     n_vars = len(variables)
     degs = list(WeightedIntegerVectors(degree,[1 for i in range(n_vars)]))
