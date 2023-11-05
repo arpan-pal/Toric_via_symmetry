@@ -1,3 +1,22 @@
+def rank_poly(M):
+    '''
+    This function takes a matrix "M" with polynomial entries as input,
+    and substitutes random values for the variables and then computes the rank of the matrix.
+    Then this function returns the found rank.
+    '''
+    R=M.base_ring()
+    D={}
+    for i in range(len(R.gens())):
+        D[R.gens()[i]]=QQ.random_element(num_bound=10^3,den_bound=10^3)
+    rank1=M.subs(D).rank()
+
+    D={}
+    for i in range(len(R.gens())):
+        D[R.gens()[i]]=QQ.random_element(num_bound=10^3,den_bound=10^3)
+    rank2=M.subs(D).rank()
+
+    return max(rank1,rank2)
+
 def monomial_generator(variables, degree):
     '''
     This function takes a set of variables and a degree as input and 
@@ -75,8 +94,6 @@ def poly_to_vec(polynomial, n = 0, degree = 0):
         vec[i] = polynomial.coefficient(monomials[i])
     return vec
 
-
-
 def symmalg_homo(generators, n = 0):
     ''' 
     This function takes generators of a homogeneous prime ideal as input.
@@ -148,5 +165,173 @@ def symmalg(generators, n = 0):
     LieI = symmalg_homo([L[i] for i in rows],n_vars)
     return LieI
 
-    
+
+def find_eqn(M, eqns_dic, vals, length = 1):
+    '''
+    Inputs:
+    M = A matrix with variable entries
+    eqns_dic = A dictionary consisting of already found equations
+    vals = A dictionary consisting of values corresponding to variables of the ambient ring
+    length = Length of desired equation. i.e., number of monomials in the desired equation, a positive integer less than or equal to 3
+    Outputs:
+    eqns_dic  = Returns a copy of the dictionary eqns_dic
+    True/False = Returns True, if new equation have added to eqns_dic. Returns False otherwise.
+
+    This function takes the matrix "M", and "length" as inputs, and looks for an equation, a maximal minor, 
+    having no more than "length" monomials.
+    Once it finds such an equation it asks the user whether they'd like to accept that equation or not.
+    If prompted yes, it adds that equation to the "eqns_dic" dictionary and returns.
+    If prompted no, it asks if the user would like to enter the equation themselves.
+    '''
+    M_sub = M.subs(vals)
+    ncols = M.ncols()
+    for i in range(100):
+        p = Permutations(ncols).random_element()
+        M_sub.permute_columns(p)
+        cols = M_sub.pivots()
+        M.permute_columns(p)
+        eqn = M[:, cols].det()
+        if len(eqn.monomials()) <= length:
+            try:
+                show(eqn)
+            except:
+                print(eqn)
+            response = input("Would you like to accept this equation? ([Y]/N): ")
+            while len(response) == 0:
+                response = input("Would you like to accept this equation? ([Y]/N): ")
+            if length == 1:
+                if response.lower()[0] == 'n':
+                    print("If you'd like to search in a different matrix then enter: 'change'")
+                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
+                    if response.lower()[0] == 'y':
+                        raw_input = input("Enter the polynomial:")
+                        try:
+                            eqn = R(raw_input)
+                            eqns_dic[eqn.monomials()[0]] = 0
+                            for i in eqns_dic.keys():
+                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                        except Exception as e:
+                            raise InvalidInput("Invalid polynomial input.") from e
+                        return eqns_dic, True
+                    elif response.lower() == 'change':
+                        print("Going to work with another matrix.")
+                        return eqns_dic, False
+                    else:
+                        continue
+                else:
+                    eqns_dic[eqn.monomials()[0]] = 0
+                    for i in eqns_dic.keys():
+                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                    return eqns_dic, True
+            elif length == 2:
+                if response.lower()[0] == 'n':
+                    print("If you'd like to search in a different matrix then enter: 'change'")
+                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
+                    if response.lower()[0] == 'y':
+                        raw_input = input("Enter the polynomial:")
+                        try:
+                            eqn = R(raw_input)
+                            mono = eqn.monomials()
+                            coef = eqn.coefficients()
+                            eqns_dic[mono[0]] = -coef[1]*mono[1]/coef[0]
+                            for i in eqns_dic.keys():
+                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                        except Exception as e:
+                            raise InvalidInput("Invalid polynomial input.") from e
+                        return eqns_dic, True
+                    elif response.lower() == 'change':
+                        print("Going to work with another matrix.")
+                        return eqns_dic, False
+                    else:
+                        continue
+                else:
+                    mono = eqn.monomials()
+                    coef = eqn.coefficients()
+                    eqns_dic[mono[0]] = -coef[1]*mono[1]/coef[0]
+                    for i in eqns_dic.keys():
+                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                    return eqns_dic, True
+            elif length == 3:
+                if response.lower()[0] == 'n':
+                    print("If you'd like to search in a different matrix then enter: 'change'")
+                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
+                    if response.lower()[0] == 'y':
+                        raw_input = input("Enter the polynomial:")
+                        try:
+                            eqn = R(raw_input)
+                            mono = eqn.monomials()
+                            coef = eqn.coefficients()
+                            eqns_dic[mono[0]] = -(coef[1]*mono[1] + coef[2]*mono[2])/coef[0]
+                            for i in eqns_dic.keys():
+                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                        except Exception as e:
+                            raise InvalidInput("Invalid polynomial input.") from e
+                        return eqns_dic, True
+                    elif response.lower() == 'change':
+                        print("Going to work with another matrix.")
+                        return eqns_dic, False
+                    else:
+                        continue
+                else:
+                    mono = eqn.monomials()
+                    coef = eqn.coefficients()
+                    eqns_dic[mono[0]] = -(coef[1]*mono[1] + coef[2]*mono[2])/coef[0]
+                    for i in eqns_dic.keys():
+                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
+                    return eqns_dic, True
+        else:
+            continue
+    print("No equation found of desired length.")
+    return eqns_dic, False
+
+def build_equations(eqns_dic, matrices_1, vals):
+    '''
+    Inputs:
+    eqns_dic = A dictionary consisting of already found equations
+    matrices_1 = a list of matrices with variable entries
+    vals = A dictionary consisting of values corresponding to variables of the ambient ring
+    Outputs:
+    eqns_dic  = Returns a copy of the dictionary eqns_dic
+
+    This function takes a list, "matrices_1", consisting of matrices with variable entries.
+    Then it prompts the user to input the length parameter.
+    Then it passes each matrix from the "matrices_1" list to the "find_eqn" function and tries to find an equation of given length.
+    '''
+    exhausted = False
+    while not exhausted:
+        #print("Working with matrix %i"%(matrices_1.index(M)+1))
+        try:
+            length = int(input("Input the lenght parameter (an integer between 0 and 4):"))
+        except:
+            print("Invalid input.\nReassigning length to 1.")
+            length = 1
+        for mat in matrices_1:
+            M = mat.subs(eqns_dic)
+            if rank_poly(M) < 19:
+                print('Matrix %i is satisfied. Moving on to the next matrix.' %(matrices_1.index(mat)+1))
+                continue
+            else:
+                print("Working with matrix %i"%(matrices_1.index(mat)+1))
+                #M = M.subs(eqns_dic)
+                if (0 < length) and (length < 4):
+                    length = length
+                else:
+                    print("You did not enter a value between (excluding) 0 and 4.\nReassigning length to 1.")
+                    length = 1
+                eqns_dic, changed = find_eqn(M, length=length, eqns_dic = eqns_dic, vals = vals)
+                if changed:
+                    try:
+                        print("eqns_dic = ")
+                        show(eqns_dic)
+                        break
+                    except:
+                        print("eqns_dic = ", eqns_dic)
+                        break
+        for mat in matrices_1:
+            M = mat.subs(eqns_dic)
+            exhausted = True
+            if rank_poly(M) > 18:
+                exhausted = False
+                break
+    return eqns_dic
 
