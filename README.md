@@ -2,7 +2,7 @@
 This repository hosts the codes and and necessary computational results supporting the upcoming paper titled _Symmetry Lie Algebras of Varieties with Applications to Algebraic Statistics_.
 
 SageMath version 10.3, Release Date: 2024-03-19                    │
-Using Python 3.11.8. Type "help()" for help.     
+Using Python 3.11.8.     
 
 The implimentation of the key algorithm in the paper can be found in the file `Symmalg.sage`. Some examples of the how to use the code can be found in `Test_notebook.ipynb` and `Toricideal.ipynb`.
 
@@ -46,4 +46,4 @@ print(f"\nComputation Time: {formatted_time_str}")
 ```
 
 ### Note:
-The complexity of our code is not very good at the moment. The time taken grows very fast as the number of variables grow fast. The ```symmalg``` function may take very long to finish. In many cases there is room for improvement, and in one of our example we take advantage of that. Please see `ToricIdeal_9x9_conjecture_disproved.ipynb` and may try to optimize your computation as there, in case you find you code is taking too long to run the ```symmalg``` function.
+The complexity of our code is not very good at the moment. The time taken grows very fast as the number of variables grow. The ```symmalg``` function may take very long to finish. In many cases there is room for improvement, and in one of our example we take advantage of that. Please see `ToricIdeal_9x9_conjecture_disproved.ipynb`. One may try to optimize their computation as there, in case they find their code is taking too long to run the ```symmalg``` function.
