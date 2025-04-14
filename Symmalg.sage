@@ -19,9 +19,38 @@ def rank_poly(M):
 
 def monomial_generator(variables, degree):
     '''
-    This function takes a set of variables and a degree as input and 
-returns a list of monomials of desired degree in the given set 
-of variables.
+    Generates all monomials of a given degree in a specified set of variables.
+
+    This function constructs and returns a list of all possible monomials 
+    of a specified total degree using a given set of variables.
+
+    Parameters:
+    ----------
+    variables : list
+        A list of variables (symbols) used to generate monomials.
+    degree : int
+        The total degree of the monomials to be generated.
+
+    Returns:
+    -------
+    monomials : list
+        A list of monomials of the specified degree, expressed in terms of the given variables.
+
+    Notes:
+    ------
+    - The function generates all possible ways to distribute `degree` among the given `variables`.
+    - It utilizes `WeightedIntegerVectors` to find all non-negative integer solutions 
+      to `x1 + x2 + ... + xn = degree`, ensuring all valid monomials are included.
+
+    Example:
+    --------
+    Suppose `variables = [x, y]` and `degree = 2`. The function will return:
+    
+        [x^2, x*y, y^2]
+    
+    For `variables = [x, y, z]` and `degree = 3`, it returns:
+    
+        [x^3, x^2*y, x^2*z, x*y^2, x*y*z, x*z^2, y^3, y^2*z, y*z^2, z^3]
     '''
     n_vars = len(variables)
     degs = list(WeightedIntegerVectors(degree,[1 for i in range(n_vars)]))
@@ -35,10 +64,41 @@ of variables.
 
 def lie_derivative_mono(monomial, g, n = 0):
     '''
-    This function takes a monomial and a matrix `g` as input and returns Lie derivative of the monomial with respect to `g`.
-    monomial = a monomial
-    g = a matrix, with respect to which the Lie derivative is calculated
-    n = number of variables in the ambient ring, optional argument
+    Computes the Lie derivative of a monomial with respect to a given matrix.
+
+    This function calculates the Lie derivative of a monomial `monomial` with respect to 
+    a matrix `g`, which represents an infinitesimal transformation. The derivative is 
+    computed by applying the transformation encoded in `g` to each variable in the monomial.
+
+    Parameters:
+    ----------
+    monomial : Polynomial
+        A monomial (single-term polynomial) whose Lie derivative is to be computed.
+    g : Matrix
+        The matrix representing the transformation with respect to which the Lie derivative is calculated.
+    n : int, optional (default=0)
+        The number of variables in the ambient polynomial ring. If not provided (n=0), 
+        it is inferred from the monomial’s parent ring.
+
+    Returns:
+    -------
+    der : Polynomial
+        The resulting polynomial after applying the Lie derivative.
+
+    Notes:
+    ------
+    - If `n` is not specified, it is inferred from the monomial’s ring.
+    - The function constructs a dictionary mapping variables to their indices in `g`.
+    - The derivative is computed by applying the transformation `g` to each variable in the monomial 
+      and summing over the resulting transformed terms.
+
+    Example:
+    --------
+    Suppose we have a monomial `m = x^2` and a transformation matrix `g`:
+
+        g = Matrix([[0, -1], [1, 0]])  # A simple rotation matrix
+
+    Calling `lie_derivative_mono(m, g, n=2)` would return the Lie derivative of `m` with respect to `g`.
     '''
     if n == 0:
         n_vars = len(monomial.parent().gens())
@@ -57,10 +117,40 @@ def lie_derivative_mono(monomial, g, n = 0):
 
 def lie_derivative_poly(poly, g, n = 0):
     '''
-    This function takes a polynomial and a matrix `g` as input, and returns Lie derivative of the polynomial with respect to `g`.
-    polynomial = a polynomial
-    g = a matrix, with respect to which the Lie derivative is calculated
-    n = number of variables in the ambient ring, optional argument
+    Computes the Lie derivative of a polynomial with respect to a given matrix.
+
+    The function calculates the Lie derivative of a polynomial `poly` with respect to 
+    a matrix `g`, which represents an infinitesimal transformation. The derivative is 
+    computed by applying the Lie derivative operator to each monomial in the polynomial.
+
+    Parameters:
+    ----------
+    poly : Polynomial
+        The polynomial whose Lie derivative is to be computed.
+    g : Matrix
+        The matrix representing the transformation with respect to which the Lie derivative is calculated.
+    n : int, optional (default=0)
+        The number of variables in the ambient polynomial ring. If not provided (n=0), 
+        it is inferred from the polynomial’s parent ring.
+
+    Returns:
+    -------
+    der : Polynomial
+        The resulting polynomial after applying the Lie derivative.
+
+    Notes:
+    ------
+    - If `n` is not specified, it is inferred from the polynomial’s ring.
+    - The function iterates through each monomial in `poly`, applying the Lie derivative.
+    - The final derivative is obtained as a sum over all transformed monomials, weighted by their coefficients.
+
+    Example:
+    --------
+    Given a polynomial `f = x^2 + xy` and a matrix `g` representing a linear transformation:
+    
+        g = Matrix([[0, -1], [1, 0]])   # A simple rotation matrix
+    
+    Calling `lie_derivative_poly(f, g, n=2)` would return the Lie derivative of `f` with respect to `g`.
     '''
     if n == 0:
         n_vars = len(poly.parent().gens())
@@ -73,10 +163,45 @@ def lie_derivative_poly(poly, g, n = 0):
 
 def poly_to_vec(polynomial, n = 0, degree = 0):
     '''
-    This function takes a polynomial as input and returns its vector representation as output.
-    polynomial = a polynomial
-    n = number of variables in the ambient polynomial ring
-    degree = degree of the polynomial
+    Converts a polynomial into its vector representation.
+
+    This function takes a polynomial and returns its corresponding vector representation 
+    by extracting the coefficients of all monomials up to a specified degree.
+
+    Parameters:
+    ----------
+    polynomial : Polynomial
+        The polynomial to be converted into vector form.
+    n : int, optional (default=0)
+        The number of variables in the ambient polynomial ring. If not provided (n=0), 
+        it is inferred from the polynomial's parent ring.
+    degree : int, optional (default=0)
+        The degree of the polynomial. If not provided (degree=0), 
+        it is inferred from the polynomial itself.
+
+    Returns:
+    -------
+    vec : list
+        A list representing the vectorized form of the polynomial, where each entry corresponds 
+        to the coefficient of a monomial in the chosen basis.
+
+    Notes:
+    ------
+    - If `n` is not specified, the function determines the number of variables from the polynomial's ring.
+    - If `degree` is not specified, it is inferred from the polynomial.
+    - The function constructs a monomial basis of the given degree and extracts coefficients accordingly.
+    - The resulting vector has length equal to the number of monomials of degree `d` in `n` variables, 
+      computed as `binomial(n + d - 1, d)`.
+
+    Example:
+    --------
+    Given a polynomial in 3 variables:
+    
+        f = x^2 + 2xy + 3y^2 + xz
+    
+    Calling `poly_to_vec(f, n=3, degree=2)` would return a vector of coefficients 
+    corresponding to the monomial ordering.
+
     '''
     R = polynomial.parent()
     if n == 0:
@@ -96,11 +221,36 @@ def poly_to_vec(polynomial, n = 0, degree = 0):
 
 def symmalg_homo(generators, n = 0):
     ''' 
-    This function takes generators of a homogeneous prime ideal as input.
-    Then computes and returns the symmetry Lie algebra of the ideal generated by the polynomials in `generatos`. 
-    This function also assumes that all the generating polynomials of the ideal homogeneous and of same degree.
-    generatots = generators of the ideal
-    n = number of variables in the ambient ring
+    Computes the symmetry Lie algebra of a homogeneous prime ideal.
+
+    This function takes generators of a **homogeneous prime ideal** and computes the symmetry Lie algebra
+    of the ideal. It assumes that all the generating polynomials are **homogeneous** and have the **same degree**.
+
+    Parameters:
+    ----------
+    generators : list
+        A list of polynomial generators defining the homogeneous prime ideal.
+    n : int, optional (default=0)
+        The number of variables in the ambient polynomial ring. If not provided (n=0), 
+        it is inferred from the first generator.
+
+    Returns:
+    -------
+    LieI : GAP Lie Algebra object
+        The computed symmetry Lie algebra represented as a GAP Lie Algebra.
+
+    Notes:
+    ------
+    - Constructs a polynomial ring with variables for both original polynomial variables and matrix coefficients.
+    - Computes the Lie derivatives of the generators using a symbolic matrix representation.
+    - Forms a system of equations from minors of matrices to determine symmetry constraints.
+    - Computes the kernel of the coefficient matrix to obtain basis elements of the Lie algebra.
+    - Uses GAP to define the resulting Lie algebra.
+
+    Output:
+    -------
+    - Displays a basis of the computed Lie algebra as a list of matrices.
+    
     '''
     S = generators[0].parent()
     if n!=0:
@@ -140,10 +290,32 @@ def symmalg_homo(generators, n = 0):
 
 def symmalg(generators, n = 0):
     ''' 
-    This function takes generators of a homogeneous prime ideal as input.
-    Then computes and returns the symmetry Lie algebra of the ideal generated by the polynomials in `generatos`.
-    generatots = generators of the ideal, a list
-    n = number of variables in the ambient ring
+    Computes the symmetry Lie algebra of an ideal generated by the given polynomials.
+    
+    This function takes a list of polynomial generators defining an ideal and computes its symmetry Lie algebra.
+    It constructs a polynomial ring, determines an appropriate basis, and applies a homomorphism to obtain the 
+    symmetry Lie algebra.
+
+    Parameters:
+    ----------
+    generators : list
+        A list of polynomial generators defining the ideal.
+    n : int, optional (default=0)
+        The number of variables in the ambient polynomial ring. If not specified (n=0), 
+        it is inferred from the first generator.
+
+    Returns:
+    -------
+    LieI : Lie algebra object
+        The computed symmetry Lie algebra of the given ideal.
+
+    Notes:
+    ------
+    - If `n` is not provided, the number of variables is inferred from the first generator.
+    - Constructs a polynomial ring over the rationals.
+    - Expands the generators into a basis by multiplying with monomials of appropriate degree.
+    - Uses row reduction on the matrix representation of the expanded generators.
+    - Calls `symmalg_homo` to finalize the Lie algebra structure.
     '''
     S = generators[0].parent()
     if n!=0:
@@ -164,174 +336,3 @@ def symmalg(generators, n = 0):
     rows = M.pivot_rows()
     LieI = symmalg_homo([L[i] for i in rows],n_vars)
     return LieI
-
-
-def find_eqn(M, eqns_dic, vals, length = 1):
-    '''
-    Inputs:
-    M = A matrix with variable entries
-    eqns_dic = A dictionary consisting of already found equations
-    vals = A dictionary consisting of values corresponding to variables of the ambient ring
-    length = Length of desired equation. i.e., number of monomials in the desired equation, a positive integer less than or equal to 3
-    Outputs:
-    eqns_dic  = Returns a copy of the dictionary eqns_dic
-    True/False = Returns True, if new equation have added to eqns_dic. Returns False otherwise.
-
-    This function takes the matrix "M", and "length" as inputs, and looks for an equation, a maximal minor, 
-    having no more than "length" monomials.
-    Once it finds such an equation it asks the user whether they'd like to accept that equation or not.
-    If prompted yes, it adds that equation to the "eqns_dic" dictionary and returns.
-    If prompted no, it asks if the user would like to enter the equation themselves.
-    '''
-    M_sub = M.subs(vals)
-    ncols = M.ncols()
-    for i in range(100):
-        p = Permutations(ncols).random_element()
-        M_sub.permute_columns(p)
-        cols = M_sub.pivots()
-        M.permute_columns(p)
-        eqn = M[:, cols].det()
-        if len(eqn.monomials()) <= length:
-            try:
-                show(eqn)
-            except:
-                print(eqn)
-            response = input("Would you like to accept this equation? ([Y]/N): ")
-            while len(response) == 0:
-                response = input("Would you like to accept this equation? ([Y]/N): ")
-            if length == 1:
-                if response.lower()[0] == 'n':
-                    print("If you'd like to search in a different matrix then enter: 'change'")
-                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
-                    if response.lower()[0] == 'y':
-                        raw_input = input("Enter the polynomial:")
-                        try:
-                            eqn = R(raw_input)
-                            eqns_dic[eqn.monomials()[0]] = 0
-                            for i in eqns_dic.keys():
-                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                        except Exception as e:
-                            raise InvalidInput("Invalid polynomial input.") from e
-                        return eqns_dic, True
-                    elif response.lower() == 'change':
-                        print("Going to work with another matrix.")
-                        return eqns_dic, False
-                    else:
-                        continue
-                else:
-                    eqns_dic[eqn.monomials()[0]] = 0
-                    for i in eqns_dic.keys():
-                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                    return eqns_dic, True
-            elif length == 2:
-                if response.lower()[0] == 'n':
-                    print("If you'd like to search in a different matrix then enter: 'change'")
-                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
-                    if response.lower()[0] == 'y':
-                        raw_input = input("Enter the polynomial:")
-                        try:
-                            eqn = R(raw_input)
-                            mono = eqn.monomials()
-                            coef = eqn.coefficients()
-                            eqns_dic[mono[0]] = -coef[1]*mono[1]/coef[0]
-                            for i in eqns_dic.keys():
-                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                        except Exception as e:
-                            raise InvalidInput("Invalid polynomial input.") from e
-                        return eqns_dic, True
-                    elif response.lower() == 'change':
-                        print("Going to work with another matrix.")
-                        return eqns_dic, False
-                    else:
-                        continue
-                else:
-                    mono = eqn.monomials()
-                    coef = eqn.coefficients()
-                    eqns_dic[mono[0]] = -coef[1]*mono[1]/coef[0]
-                    for i in eqns_dic.keys():
-                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                    return eqns_dic, True
-            elif length == 3:
-                if response.lower()[0] == 'n':
-                    print("If you'd like to search in a different matrix then enter: 'change'")
-                    response = input('Would you like to input the polynomial yourself? (Y/[N]):')
-                    if response.lower()[0] == 'y':
-                        raw_input = input("Enter the polynomial:")
-                        try:
-                            eqn = R(raw_input)
-                            mono = eqn.monomials()
-                            coef = eqn.coefficients()
-                            eqns_dic[mono[0]] = -(coef[1]*mono[1] + coef[2]*mono[2])/coef[0]
-                            for i in eqns_dic.keys():
-                                eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                        except Exception as e:
-                            raise InvalidInput("Invalid polynomial input.") from e
-                        return eqns_dic, True
-                    elif response.lower() == 'change':
-                        print("Going to work with another matrix.")
-                        return eqns_dic, False
-                    else:
-                        continue
-                else:
-                    mono = eqn.monomials()
-                    coef = eqn.coefficients()
-                    eqns_dic[mono[0]] = -(coef[1]*mono[1] + coef[2]*mono[2])/coef[0]
-                    for i in eqns_dic.keys():
-                        eqns_dic[i] = eqns_dic[i].subs(eqns_dic)
-                    return eqns_dic, True
-        else:
-            continue
-    print("No equation found of desired length.")
-    return eqns_dic, False
-
-def build_equations(eqns_dic, matrices_1, vals):
-    '''
-    Inputs:
-    eqns_dic = A dictionary consisting of already found equations
-    matrices_1 = a list of matrices with variable entries
-    vals = A dictionary consisting of values corresponding to variables of the ambient ring
-    Outputs:
-    eqns_dic  = Returns a copy of the dictionary eqns_dic
-
-    This function takes a list, "matrices_1", consisting of matrices with variable entries.
-    Then it prompts the user to input the length parameter.
-    Then it passes each matrix from the "matrices_1" list to the "find_eqn" function and tries to find an equation of given length.
-    '''
-    exhausted = False
-    while not exhausted:
-        #print("Working with matrix %i"%(matrices_1.index(M)+1))
-        try:
-            length = int(input("Input the lenght parameter (an integer between 0 and 4):"))
-        except:
-            print("Invalid input.\nReassigning length to 1.")
-            length = 1
-        for mat in matrices_1:
-            M = mat.subs(eqns_dic)
-            if rank_poly(M) < 19:
-                print('Matrix %i is satisfied. Moving on to the next matrix.' %(matrices_1.index(mat)+1))
-                continue
-            else:
-                print("Working with matrix %i"%(matrices_1.index(mat)+1))
-                #M = M.subs(eqns_dic)
-                if (0 < length) and (length < 4):
-                    length = length
-                else:
-                    print("You did not enter a value between (excluding) 0 and 4.\nReassigning length to 1.")
-                    length = 1
-                eqns_dic, changed = find_eqn(M, length=length, eqns_dic = eqns_dic, vals = vals)
-                if changed:
-                    try:
-                        print("eqns_dic = ")
-                        show(eqns_dic)
-                        break
-                    except:
-                        print("eqns_dic = ", eqns_dic)
-                        break
-        for mat in matrices_1:
-            M = mat.subs(eqns_dic)
-            exhausted = True
-            if rank_poly(M) > 18:
-                exhausted = False
-                break
-    return eqns_dic
-
