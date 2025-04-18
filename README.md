@@ -50,7 +50,7 @@ All examples throughout the paper run in less than 2.5 minutes, except for the i
 
 ### Computations for symmetry Lie algebra of the caterpillar tree (Example 5.2). 
 
-`Example_5.2.ipynb` is done differently, not just by running the  ```symmalg()``` command. This is because the runing time was high; it was requiring more than 6 hours. The challenge is in solving this very large linear system of $18\binom{45}{19}$ equations: solving for all $19\times 19$ minors of 18 matrices, each of dimensions $19\times 45$. We then decided to intervine and use the specific structure of the ideal. We intervine by 
+`Example_5.2.ipynb` is done differently, not just by running the  ```symmalg()``` command. This is because the runing time was high; it was requiring more than 6 hours. The challenge is in solving this very large linear system of $18\times \binom{45}{19}$ equations: solving for all $19\times 19$ minors of 18 matrices, each of dimensions $19\times 45$. We then decided to intervine and use the specific structure of the ideal. We intervine by 
 - for each matrix $M_i(g)$, we remove rows of all zero entries,
 - fix variable $g_{kl}$ and a linear equation containing this variable. Solve this equation for $g_{kl}$; that is, write it in the form $g_{kl} = \sum \alpha_{rs} g_{rs}$. Substitute $g_{kl}$ with this sum in each matrix $M_i(g)$. The new system has one less parameter.
 
