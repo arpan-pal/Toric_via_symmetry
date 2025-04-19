@@ -1,0 +1,47 @@
+{
+    "creators": [
+        {
+            "name": "Maraj, Aida",
+            "orcid": "https://orcid.org/0000-0001-7822-3544",
+            "affiliation": "Max Planck Institute of Molecular Cell Biology and Genetics",
+            "type": "ProjectMember"
+        },
+        {
+            "name": "Pal, Arpan",
+            "orcid": "https://orcid.org/0000-0002-0869-986X",
+            "affiliation": "University of Idaho",
+            "type": "ProjectMember"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "Maraj, Aida",
+            "type": "Researcher",
+            "affiliation" :"Max Planck Institute of Molecular Cell Biology and Genetics"
+        },
+        {
+            "name": "Pal, Arpan",
+            "affiliation": "University of Idaho",
+            "type": "Researcher"
+        }
+    ],
+    "title": "Symmetry Lie Algebras of Ideals",
+    "version": "1.0",
+    "access_right": "open",
+    "related_identifiers": [
+        {
+            "identifier": "",
+            "relation": "isSupplementToPaper",
+            "resource_type": "Preprint"
+        }
+    ],
+    "keywords": [
+        "Toric varieties",
+        "Lie theory",
+        "Algebraic Statistics",
+        "Toric ideals"
+    ],
+    "license": "GNU GENERAL PUBLIC LICENSE",
+    "upload_type": "package",
+    "language": "eng"
+}

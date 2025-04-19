@@ -1,0 +1,22 @@
+cff-version: 1.0
+title: "Symmetry Lie Algebras of Ideals"
+version: 3
+license: "GNU GENERAL PUBLIC LICENSE"
+type: package
+abstract: "This package computes the symmetry Lie algebras of ideals, following the algorithm in https://arxiv.org/abs/2309.10741"
+message: "If you use this software, please cite it as below."
+authors:
+  - given-names: Aida
+    family-names: Maraj
+    affiliation: Max Planck Institute of Molecular Cell Biology and Genetics
+    orcid: "https://orcid.org/0000-0001-7822-3544"
+  - given-names: Arpan
+    family-names: Pal
+    affiliation: University of Idaho
+    orcid: "https://orcid.org/0000-0002-0869-986X"
+
+keywords:
+  - Toric varieties
+  - Lie theory
+  - Algebraic statistics
+  - Toric ideals
