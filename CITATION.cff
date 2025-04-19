@@ -3,7 +3,7 @@ title: "Symmetry Lie Algebras of Ideals"
 version: 3
 license: "GNU GENERAL PUBLIC LICENSE"
 type: package
-abstract: "This package computes the symmetry Lie algebras of ideals, following the algorithm in https://arxiv.org/abs/2309.10741"
+abstract: "This package computes the symmetry Lie algebras of ideals"
 message: "If you use this software, please cite it as below."
 authors:
   - given-names: Aida
