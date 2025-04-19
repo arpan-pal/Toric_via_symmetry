@@ -9,11 +9,11 @@ authors:
   - given-names: Aida
     family-names: Maraj
     affiliation: Max Planck Institute of Molecular Cell Biology and Genetics
-    orcid: "https://orcid.org/0000-0001-7822-3544"
+    orcid: https://orcid.org/0000-0001-7822-3544
   - given-names: Arpan
     family-names: Pal
     affiliation: University of Idaho
-    orcid: "https://orcid.org/0000-0002-0869-986X"
+    orcid: https://orcid.org/0000-0002-0869-986X
 
 keywords:
   - Toric varieties
