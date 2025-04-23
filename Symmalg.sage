@@ -1,8 +1,6 @@
 def rank_poly(M):
     '''
-    This function takes a matrix "M" with polynomial entries as input,
-    and substitutes random values for the variables and then computes the rank of the matrix.
-    Then this function returns the found rank.
+    This function takes a matrix "M" with polynomial entries as input. It substitutes random values for the variables, and then output the rank of the matrix.
     '''
     R=M.base_ring()
     D={}
@@ -19,38 +17,14 @@ def rank_poly(M):
 
 def monomial_generator(variables, degree):
     '''
-    Generates all monomials of a given degree in a specified set of variables.
-
-    This function constructs and returns a list of all possible monomials 
-    of a specified total degree using a given set of variables.
-
-    Parameters:
-    ----------
-    variables : list
-        A list of variables (symbols) used to generate monomials.
-    degree : int
-        The total degree of the monomials to be generated.
-
-    Returns:
-    -------
-    monomials : list
-        A list of monomials of the specified degree, expressed in terms of the given variables.
-
-    Notes:
-    ------
-    - The function generates all possible ways to distribute `degree` among the given `variables`.
-    - It utilizes `WeightedIntegerVectors` to find all non-negative integer solutions 
-      to `x1 + x2 + ... + xn = degree`, ensuring all valid monomials are included.
+  This function inputs a set of variables and a positive integer, and it generates all monomials in the given variables whose degree is this integer.
+The monomials are listed in the reverse lexicographic order. The code utilizes `WeightedIntegerVectors` function to find all non-negative integer solutions to `x1 + x2 + ... + xn = degree`, ensuring all valid monomials are included.
 
     Example:
     --------
     Suppose `variables = [x, y]` and `degree = 2`. The function will return:
     
-        [x^2, x*y, y^2]
-    
-    For `variables = [x, y, z]` and `degree = 3`, it returns:
-    
-        [x^3, x^2*y, x^2*z, x*y^2, x*y*z, x*z^2, y^3, y^2*z, y*z^2, z^3]
+        [y^2, x*y, x^2]
     '''
     n_vars = len(variables)
     degs = list(WeightedIntegerVectors(degree,[1 for i in range(n_vars)]))
@@ -64,11 +38,8 @@ def monomial_generator(variables, degree):
 
 def lie_derivative_mono(monomial, g, n = 0):
     '''
-    Computes the Lie derivative of a monomial with respect to a given matrix.
-
-    This function calculates the Lie derivative of a monomial `monomial` with respect to 
-    a matrix `g`, which represents an infinitesimal transformation. The derivative is 
-    computed by applying the transformation encoded in `g` to each variable in the monomial.
+ This function computes the Lie derivative of a monomial with respect to a given matrix g of indeterminates, which represents an infinitesimal transformation. 
+The derivative is computed by applying the transformation encoded in `g` to each variable in the monomial.
 
     Parameters:
     ----------
@@ -77,8 +48,7 @@ def lie_derivative_mono(monomial, g, n = 0):
     g : Matrix
         The matrix representing the transformation with respect to which the Lie derivative is calculated.
     n : int, optional (default=0)
-        The number of variables in the ambient polynomial ring. If not provided (n=0), 
-        it is inferred from the monomial’s parent ring.
+        The number of variables in the ambient polynomial ring. If not provided, it is inferred from the monomial’s parent ring.
 
     Returns:
     -------
@@ -87,8 +57,7 @@ def lie_derivative_mono(monomial, g, n = 0):
 
     Notes:
     ------
-    - If `n` is not specified, it is inferred from the monomial’s ring.
-    - The function constructs a dictionary mapping variables to their indices in `g`.
+    - The function constructs a dictionary that maps variables to their indices in `g`.
     - The derivative is computed by applying the transformation `g` to each variable in the monomial 
       and summing over the resulting transformed terms.
 
