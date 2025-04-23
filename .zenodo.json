@@ -31,7 +31,7 @@
     "related_identifiers": [
         {
             "identifier": "https://arxiv.org/abs/2309.10741",
-            "relation": "isSupplementToPaper",
+            "relation": "isSupplementTo",
             "scheme" : "url"
         }
     ],
