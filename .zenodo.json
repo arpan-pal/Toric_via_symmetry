@@ -41,7 +41,7 @@
         "Algebraic Statistics",
         "Toric ideals"
     ],
-    "license": "GNU GENERAL PUBLIC LICENSE",
-    "upload_type": "package",
+    "license": "MIT",
+    "upload_type": "software",
     "language": "eng"
 }
