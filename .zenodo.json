@@ -30,9 +30,16 @@
     "access_right": "open",
     "related_identifiers": [
         {
+            "scheme" : "url",
             "identifier": "https://arxiv.org/abs/2309.10741",
             "relation": "isSupplementTo",
-            "scheme" : "url"
+            "resource_type" : "preprint"
+        },
+        {
+            "scheme" : "doi",
+            "identifier" : "10.5281/zenodo.15270314",
+            "relation" : "isPartOf",
+            "resource_type" : "software"
         }
     ],
     "keywords": [
