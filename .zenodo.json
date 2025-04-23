@@ -30,9 +30,9 @@
     "access_right": "open",
     "related_identifiers": [
         {
-            "identifier": "",
+            "identifier": "https://arxiv.org/abs/2309.10741",
             "relation": "isSupplementToPaper",
-            "resource_type": "Preprint"
+            "scheme" : "url"
         }
     ],
     "keywords": [
