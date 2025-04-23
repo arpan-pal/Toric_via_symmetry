@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: "Symmetry Lie Algebras of Ideals"
-version: 1.0
+version: v1.0
 license: "MIT"
 type: software
 abstract: "This package computes the symmetry Lie algebras of ideals"
