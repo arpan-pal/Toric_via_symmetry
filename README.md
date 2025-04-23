@@ -1,4 +1,6 @@
 # Toric via symmetry
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15270314.svg)](https://doi.org/10.5281/zenodo.15270314)
+
 This repository hosts an implementation of an algorithm for computing the symmetry Lie algebra of an ideal, given its generators, based on the preprint [Symmetry Lie Algebras of Varieties with Applications to Algebraic Statistics](https://arxiv.org/abs/2309.10741). It contains computational details for the examples in this preprint. 
 
 SageMath version 10.3, Release Date: 2024-03-19                   
