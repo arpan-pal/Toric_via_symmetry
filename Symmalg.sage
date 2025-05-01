@@ -1,6 +1,7 @@
 def rank_poly(M):
     '''
-    This function takes a matrix "M" with polynomial entries as input. It substitutes random values for the variables, and then output the rank of the matrix.
+	Input:  Matrix M — entries of "M" are polynomials
+	Output: a positive integer -- this is the rank of the matrix M after substituting variables with random rational values. 
     '''
     R=M.base_ring()
     D={}
@@ -12,19 +13,15 @@ def rank_poly(M):
     for i in range(len(R.gens())):
         D[R.gens()[i]]=QQ.random_element(num_bound=10^3,den_bound=10^3)
     rank2=M.subs(D).rank()
-
     return max(rank1,rank2)
+
 
 def monomial_generator(variables, degree):
     '''
-  This function inputs a set of variables and a positive integer, and it generates all monomials in the given variables whose degree is this integer.
-The monomials are listed in the reverse lexicographic order. The code utilizes `WeightedIntegerVectors` function to find all non-negative integer solutions to `x1 + x2 + ... + xn = degree`, ensuring all valid monomials are included.
+	Input: a list of variables and a positive integer
+	Output: all monomials in the given variables whose degree is the provided integer. The monomials are listed in the reverse lexicographic order. 
 
-    Example:
-    --------
-    Suppose `variables = [x, y]` and `degree = 2`. The function will return:
-    
-        [y^2, x*y, x^2]
+    Example: monomial_generator( [x, y], 2)= [y^2, x*y, x^2]
     '''
     n_vars = len(variables)
     degs = list(WeightedIntegerVectors(degree,[1 for i in range(n_vars)]))
@@ -38,37 +35,10 @@ The monomials are listed in the reverse lexicographic order. The code utilizes `
 
 def lie_derivative_mono(monomial, g, n = 0):
     '''
- This function computes the Lie derivative of a monomial with respect to a given matrix g of indeterminates, which represents an infinitesimal transformation. 
-The derivative is computed by applying the transformation encoded in `g` to each variable in the monomial.
-
-    Parameters:
-    ----------
-    monomial : Polynomial
-        A monomial (single-term polynomial) whose Lie derivative is to be computed.
-    g : Matrix
-        The matrix representing the transformation with respect to which the Lie derivative is calculated.
-    n : int, optional (default=0)
-        The number of variables in the ambient polynomial ring. If not provided, it is inferred from the monomial’s parent ring.
-
-    Returns:
-    -------
-    der : Polynomial
-        The resulting polynomial after applying the Lie derivative.
-
-    Notes:
-    ------
-    - The function constructs a dictionary that maps variables to their indices in `g`.
-    - The derivative is computed by applying the transformation `g` to each variable in the monomial 
-      and summing over the resulting transformed terms.
-
-    Example:
-    --------
-    Suppose we have a monomial `m = x^2` and a transformation matrix `g`:
-
-        g = Matrix([[0, -1], [1, 0]])  # A simple rotation matrix
-
-    Calling `lie_derivative_mono(m, g, n=2)` would return the Lie derivative of `m` with respect to `g`.
+	Input: a monomial, a matrix g of indeterminate entries, the number n of variables in the ambient polynomial ring. If not provided, it is inferred from the monomial’s parent ring.
+	Output: a polynomial which is the Lie derivative of the provided monomial with respect to matrix g of indeterminates. The derivative is computed by applying the transformation `g` to each variable in the monomial and summing over the resulting transformed terms.
     '''
+
     if n == 0:
         n_vars = len(monomial.parent().gens())
     else:
