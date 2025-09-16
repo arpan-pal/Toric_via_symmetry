@@ -175,7 +175,7 @@ def symmalg(generators, n=0):
         if g.is_homogeneous():
             continue
         else:
-            raise TypeError("Each generaror must be homogeneous.")
+            raise TypeError("Each generator must be homogeneous.")
     S = generators[0].parent()
     if n != 0:
         n_vars = n
@@ -183,7 +183,7 @@ def symmalg(generators, n=0):
         n_vars = len(S.gens())
 
     if n_vars == 1:
-        print("NOTE: The ambient ring has only one variable. The Symmetry Lie Algebra is one dimensional in this case.")
+        print("NOTE: The ambient ring has only one variable. The Symmetry Lie Algebra is one dimensional.")
         return gap.LieAlgebra(gap.Rationals, [1])
     var = [str(t) for t in S.gens()[:n_vars]]
     R = PolynomialRing(QQ, var)
